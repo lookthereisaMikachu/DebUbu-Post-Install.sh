@@ -3,7 +3,7 @@
 # Configuration and packages
 scriptname="Post-Install-Script"
 LOGFILE="/var/log/$scriptname.log"
-packages=("curl" "openssh-server" "screenfetch" "btop" "htop" "fzf" "tldr" "nvim" "tmux")
+packages=("curl" "openssh-server" "screenfetch" "btop" "htop" "fzf" "tldr" "neovim" "tmux")
 optional_packages=("cockpit" "webmin" "docker" "qemu-guest-agent")
 
 # Script requires root privileges
