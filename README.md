@@ -7,8 +7,8 @@ If you have constructive feedback please tell me ^^
 
 ## Usage
 To Run this script use 
-### as root user
-`curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash`
 
-### as user with sudo
-`curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash`
+as root user
+```curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash```
+as user with sudo
+```curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash```
