@@ -9,6 +9,10 @@ If you have constructive feedback please tell me ^^
 To Run this script use 
 
 as root user
-```curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash```
+```
+curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash
+```
 as user with sudo
-```curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash```
+```
+curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash
+```
