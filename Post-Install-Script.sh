@@ -1,5 +1,9 @@
 #!/bin/bash
 
+VERSION="0.1.1"
+# 10.13.2024
+# mm.dd.yyyy
+
 # Configuration and packages
 scriptname="Post-Install-Script"
 LOGFILE="/var/log/$scriptname.log"
@@ -157,6 +161,15 @@ install_optional_package() {
     esac
 }
 
+# Function: Set Static IP
+IP_ADDRESS=$(hostname -I)
+GATEWAY=$(route -n | awk '/UG/{print $2}')
+DNS=$(resolvectl status | grep -1 'DNS Server')
+
+set_static_ip() {
+   
+}
+
 # Function: Create user
 create_admin_user() {
     while true; do
@@ -214,6 +227,11 @@ main() {
         if prompt_yes_no "Do you want to disable root login?"; then
             passwd -l root
             show_progress "Root login has been disabled."
+        fi
+
+        # Set Static IP
+        if prompt_yes_no "Your network-configuration is\n-> IP-Address = $IP_ADDRESS\n-> Gateway = $GATEWAY\n-> DNS-Servers = $DNS\nDo you want to set a Static IP?"; then
+           set_static_ip
         fi
 
         # Reboot server
