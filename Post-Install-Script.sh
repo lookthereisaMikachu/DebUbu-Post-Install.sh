@@ -120,11 +120,11 @@ install_optional_package() {
             if [ -f /etc/os-release ]; then
                 . /etc/os-release
                 if [ "$ID" == "ubuntu" ]; then
-                    apt-get install -t ${VERSION_CODENAME}-backports cockpit
+                    apt-get install -t ${VERSION_CODENAME}-backports cockpit -y
                 elif [ "$ID" == "debian" ]; then
                     echo "deb http://deb.debian.org/debian ${VERSION_CODENAME}-backports main" > /etc/apt/sources.list.d/backports.list
                     apt-get update
-                    apt-get install -t ${VERSION_CODENAME}-backports cockpit
+                    apt-get install -t ${VERSION_CODENAME}-backports cockpit -y
                 else
                     echo "It is neither Debian nor Ubuntu."
                 fi
