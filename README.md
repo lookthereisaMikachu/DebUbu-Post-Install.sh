@@ -16,11 +16,11 @@ To Run this script use
 ### wget
 as root user
 ```
-wget -O - https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash
+wget -O - https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash -c
 ```
 as user with sudo
 ```
-wget -qO- https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash
+wget -qO- https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash -c
 ```
 
 ### curl
