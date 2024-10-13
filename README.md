@@ -13,6 +13,17 @@ This Bash script automates the post-installation setup process for Debian- and U
 ## Usage:
 To Run this script use 
 
+### wget
+as root user
+```
+wget -O - https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash
+```
+as user with sudo
+```
+wget -qO- https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | sudo bash
+```
+
+### curl
 as root user
 ```
 curl https://raw.githubusercontent.com/lookthereisaMikachu/DebUbu-Post-Install.sh/refs/heads/main/Post-Install-Script.sh | bash
