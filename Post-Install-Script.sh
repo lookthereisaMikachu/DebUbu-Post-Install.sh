@@ -1,5 +1,9 @@
 #!/bin/bash
 
+VERSION="0.1.1"
+# 10.28.2024
+# mm.dd.yyyy
+
 # Configuration and packages
 scriptname="Post-Install-Script"
 LOGFILE="/var/log/$scriptname.log"
@@ -116,11 +120,11 @@ install_optional_package() {
             if [ -f /etc/os-release ]; then
                 . /etc/os-release
                 if [ "$ID" == "ubuntu" ]; then
-                    apt-get install -t ${VERSION_CODENAME}-backports cockpit
+                    apt-get install -t ${VERSION_CODENAME}-backports cockpit -y
                 elif [ "$ID" == "debian" ]; then
                     echo "deb http://deb.debian.org/debian ${VERSION_CODENAME}-backports main" > /etc/apt/sources.list.d/backports.list
                     apt-get update
-                    apt-get install -t ${VERSION_CODENAME}-backports cockpit
+                    apt-get install -t ${VERSION_CODENAME}-backports cockpit -y
                 else
                     echo "It is neither Debian nor Ubuntu."
                 fi
@@ -160,30 +164,45 @@ install_optional_package() {
 # Function: Create user
 create_admin_user() {
     while true; do
+        # Prompt for username
         username=$(whiptail --inputbox "Enter the name of the new administrator: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
         prompt_cancel || continue  # On cancel, prompt for next input
 
+        # Check if the username already exists
         if id "$username" &>/dev/null; then
             show_progress "User $username already exists!"
         else
+            # Prompt for password and verification
             password=$(whiptail --passwordbox "Enter the password for $username: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
-            prompt_cancel || continue  # On cancel, prompt for next input
+            prompt_cancel || continue
             pass_verify=$(whiptail --passwordbox "Re-enter the password for $username: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
-            prompt_cancel || continue  # On cancel, prompt for next input
-            
+            prompt_cancel || continue
+
             if [[ "$password" == "$pass_verify" ]]; then
-                echo "$username:$password" | chpasswd
-                useradd -m -s /bin/bash "$username"
-                usermod -aG sudo "$username"
-                show_progress "User $username created and added to the sudo group."
-                break
+                # Create user and set the password
+                if useradd -m -s /bin/bash "$username" && echo "$username:$password" | chpasswd; then
+                    usermod -aG sudo "$username"
+                    show_progress "User $username created and added to the sudo group."
+
+                    # Verify login by switching to the new user
+                    su -c "exit" - "$username"
+                    if [[ $? -eq 0 ]]; then
+                        show_progress "User $username successfully verified and able to log in."
+                        break
+                    else
+                        show_progress "User $username was created but could not log in. Removing user."
+                        userdel -r "$username"  # Clean up by removing user and home directory
+                    fi
+                else
+                    show_progress "Failed to create user $username. Please try again."
+                fi
             else
-                prompt_interact "The inputs do not match. Try again."
-                continue
+                prompt_interact "The passwords do not match. Try again."
             fi
         fi
     done
 }
+
 
 # Function: Main installation
 main() {
