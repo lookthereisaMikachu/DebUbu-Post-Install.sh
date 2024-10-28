@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VERSION="0.1.1"
-# 10.13.2024
+# 10.28.2024
 # mm.dd.yyyy
 
 # Configuration and packages
