@@ -161,42 +161,48 @@ install_optional_package() {
     esac
 }
 
-# Function: Set Static IP
-IP_ADDRESS=$(hostname -I)
-GATEWAY=$(route -n | awk '/UG/{print $2}')
-DNS=$(resolvectl status | grep -1 'DNS Server')
-
-set_static_ip() {
-   
-}
-
 # Function: Create user
 create_admin_user() {
     while true; do
+        # Prompt for username
         username=$(whiptail --inputbox "Enter the name of the new administrator: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
         prompt_cancel || continue  # On cancel, prompt for next input
 
+        # Check if the username already exists
         if id "$username" &>/dev/null; then
             show_progress "User $username already exists!"
         else
+            # Prompt for password and verification
             password=$(whiptail --passwordbox "Enter the password for $username: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
-            prompt_cancel || continue  # On cancel, prompt for next input
+            prompt_cancel || continue
             pass_verify=$(whiptail --passwordbox "Re-enter the password for $username: " 8 78 --title "$scriptname" 3>&1 1>&2 2>&3)
-            prompt_cancel || continue  # On cancel, prompt for next input
-            
+            prompt_cancel || continue
+
             if [[ "$password" == "$pass_verify" ]]; then
-                echo "$username:$password" | chpasswd
-                useradd -m -s /bin/bash "$username"
-                usermod -aG sudo "$username"
-                show_progress "User $username created and added to the sudo group."
-                break
+                # Create user and set the password
+                if useradd -m -s /bin/bash "$username" && echo "$username:$password" | chpasswd; then
+                    usermod -aG sudo "$username"
+                    show_progress "User $username created and added to the sudo group."
+
+                    # Verify login by switching to the new user
+                    su -c "exit" - "$username"
+                    if [[ $? -eq 0 ]]; then
+                        show_progress "User $username successfully verified and able to log in."
+                        break
+                    else
+                        show_progress "User $username was created but could not log in. Removing user."
+                        userdel -r "$username"  # Clean up by removing user and home directory
+                    fi
+                else
+                    show_progress "Failed to create user $username. Please try again."
+                fi
             else
-                prompt_interact "The inputs do not match. Try again."
-                continue
+                prompt_interact "The passwords do not match. Try again."
             fi
         fi
     done
 }
+
 
 # Function: Main installation
 main() {
@@ -227,11 +233,6 @@ main() {
         if prompt_yes_no "Do you want to disable root login?"; then
             passwd -l root
             show_progress "Root login has been disabled."
-        fi
-
-        # Set Static IP
-        if prompt_yes_no "Your network-configuration is\n-> IP-Address = $IP_ADDRESS\n-> Gateway = $GATEWAY\n-> DNS-Servers = $DNS\nDo you want to set a Static IP?"; then
-           set_static_ip
         fi
 
         # Reboot server
